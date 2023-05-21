@@ -3,7 +3,13 @@ import random
 import time
 import datetime
 
-class recall:
+"""
+Active recall notifier:
+ - Take in notes similar to quizlet format
+ - Quiz user on question (True or False), maybe type in 
+ - Show stats (# questions they get right/wrong, when they perform the best, motivation)
+"""
+class active_recall:
 
     def __init__(self):
         self.vocab = pd.read_csv("Data/vocabulary.csv")
@@ -40,15 +46,14 @@ class recall:
         random.shuffle(options) # randomize order of options
         return [answer[0],answer[1],options,answer[2]]
 
-    def update_corrections_stats(self,result):
-        if result == 0:
-            self.correction_stats.loc[self.word_num,"Wrong"]+=1 # update wrong stats
-        else: self.correction_stats.loc[self.word_num,"Correct"]+=1 # update right stats
+    def update_corrections_stats(self,result): # result (0=wrong,1=right,2=error)
+        if result == 0: self.correction_stats.loc[self.word_num,"Wrong"]+=1 # update wrong stats
+        elif result == 1: self.correction_stats.loc[self.word_num,"Correct"]+=1 # update right stats
 
         self.correction_stats.loc[self.word_num,"Attempts"]+=1 # update attempts 
         self.correction_stats.to_csv("Data/correction_stats.csv",index=False) # update csv
 
-    def update_timeline_stats(self,english,french,result):
+    def update_timeline_stats(self,english,french,result): # result (0=wrong,1=right,2=error)
         update = pd.DataFrame({"Timestamp":[self.timestamp],"English":[english],"French":[french],"Result":[result]})
         self.timeline_stats=pd.concat([self.timeline_stats, update], axis=0, ignore_index=True) # add results to df
         self.timeline_stats.to_csv("Data/timeline_stats.csv",index=False) # update csv
