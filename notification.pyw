@@ -21,7 +21,7 @@ if "USER_CANCELED" in total_dismissal_reason: # Canceled = attempts+=1 (result =
     info.update_corrections_stats(2)
     info.update_timeline_stats(info.word,info.answer,2)
 
-elif "TIMED_OUT" in total_dismissal_reason: # Timeout = wrong
+elif "TIMED_OUT" in total_dismissal_reason: # Timeout -> wrong
     info.update_corrections_stats(0)
     info.update_timeline_stats(info.word,info.answer,0)
 
@@ -35,12 +35,10 @@ else:
         info.update_corrections_stats(1) # update stats
         info.update_timeline_stats(info.word,info.answer,1)
     else:
-        toast('Active Recall Time: Wrong ❌', 'Don\'t give up\n\nAnsw er: {0}\nYour Choice: {1}'.format(info.answer,user_selection),icon=icon_incorrect, button="Dismiss") # send out incorrect notification
+        solutions =info.options.remove(info.answer)
+        toast('Active Recall Time: Wrong ❌', 'Don\'t give up\n\nAnswer: {0}\nYour Choice: {1}'.format(info.answer,user_selection),icon=icon_incorrect, button="Dismiss") # send out incorrect notification
 
         info.update_corrections_stats(0) # update stats
         info.update_timeline_stats(info.word,info.answer,0)
-        # Show translations for all options
-        # '' = wrong
-                              
-# toast('Hello', 'Which do you like?\najshds\n', selection=info.options, button='Submit')
-# # {'arguments': 'dismiss', 'user_input': {'selection': 'Grape'}}
+        # Idea: Show translations for all options
+                            
